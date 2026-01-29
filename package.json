@@ -29,7 +29,7 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "prepublishOnly": "pnpm build",
-    "release": "pnpm build && npm publish --access public"
+    "release": "./scripts/release.sh"
   },
   "dependencies": {
     "@clack/prompts": "^0.9.1",
