@@ -65,10 +65,10 @@ echo "" >> "$TEMP_FILE"
 tail -n +3 "$CHANGELOG_FILE" >> "$TEMP_FILE" 2>/dev/null || true
 mv "$TEMP_FILE" "$CHANGELOG_FILE"
 
-# Commit, tag, and push
+# Commit and tag
 git add package.json "$CHANGELOG_FILE"
 git commit -m "chore: release v$NEW_VERSION"
 git tag -a "v$NEW_VERSION" -m "v$NEW_VERSION"
-git push && git push --tags
 
-echo -e "${GREEN}Released v$NEW_VERSION${NC}"
+echo -e "${GREEN}Created release v$NEW_VERSION${NC}"
+echo -e "Push to trigger CI: ${YELLOW}git push && git push --tags${NC}"
