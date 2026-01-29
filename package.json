@@ -1,0 +1,31 @@
+{
+  "name": "rundev",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Smart dev server launcher with environment switching",
+  "bin": {
+    "rundev": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "citty": "^0.1.6",
+    "conf": "^13.1.0",
+    "execa": "^9.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "envPath": "custom/{env}",
+  "scriptFilter": "dev*"
+}
