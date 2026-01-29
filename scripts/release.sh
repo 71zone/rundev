@@ -7,6 +7,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+BUMP_TYPE=$1
+
+if [[ -z "$BUMP_TYPE" ]]; then
+  echo -e "${RED}Usage: release.sh <patch|minor|major|x.x.x>${NC}"
+  exit 1
+fi
+
 # Check for uncommitted changes
 if [[ -n $(git status --porcelain) ]]; then
   echo -e "${RED}Error: Working directory has uncommitted changes${NC}"
@@ -17,42 +24,14 @@ fi
 CURRENT_VERSION=$(node -p "require('./package.json').version")
 echo -e "Current version: ${YELLOW}$CURRENT_VERSION${NC}"
 
-# Prompt for version bump type
-echo ""
-echo "Select version bump type:"
-echo "  1) patch (bug fixes)"
-echo "  2) minor (new features)"
-echo "  3) major (breaking changes)"
-echo "  4) custom"
-read -p "Choice [1]: " CHOICE
-CHOICE=${CHOICE:-1}
-
-case $CHOICE in
-  1) BUMP="patch" ;;
-  2) BUMP="minor" ;;
-  3) BUMP="major" ;;
-  4)
-    read -p "Enter custom version: " NEW_VERSION
-    ;;
-  *)
-    echo -e "${RED}Invalid choice${NC}"
-    exit 1
-    ;;
-esac
-
 # Calculate new version
-if [ -z "$NEW_VERSION" ]; then
-  NEW_VERSION=$(npx semver "$CURRENT_VERSION" -i "$BUMP")
+if [[ "$BUMP_TYPE" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  NEW_VERSION="$BUMP_TYPE"
+else
+  NEW_VERSION=$(npx semver "$CURRENT_VERSION" -i "$BUMP_TYPE")
 fi
 
 echo -e "New version: ${GREEN}$NEW_VERSION${NC}"
-read -p "Continue? [Y/n]: " CONFIRM
-CONFIRM=${CONFIRM:-Y}
-
-if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
-  echo "Aborted"
-  exit 0
-fi
 
 # Update package.json version
 npm version "$NEW_VERSION" --no-git-tag-version
@@ -86,15 +65,10 @@ echo "" >> "$TEMP_FILE"
 tail -n +3 "$CHANGELOG_FILE" >> "$TEMP_FILE" 2>/dev/null || true
 mv "$TEMP_FILE" "$CHANGELOG_FILE"
 
-echo -e "${GREEN}Updated CHANGELOG.md${NC}"
-
-# Commit and tag
+# Commit, tag, and push
 git add package.json "$CHANGELOG_FILE"
 git commit -m "chore: release v$NEW_VERSION"
 git tag -a "v$NEW_VERSION" -m "v$NEW_VERSION"
+git push && git push --tags
 
-echo ""
-echo -e "${GREEN}Created commit and tag v$NEW_VERSION${NC}"
-echo ""
-echo "To publish, run:"
-echo -e "  ${YELLOW}git push && git push --tags${NC}"
+echo -e "${GREEN}Released v$NEW_VERSION${NC}"
