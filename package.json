@@ -1,8 +1,24 @@
 {
-  "name": "rundev",
+  "name": "@71zone/rundev",
   "version": "0.1.0",
   "type": "module",
   "description": "Smart dev server launcher with environment switching",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/71zone/rundev.git"
+  },
+  "homepage": "https://github.com/71zone/rundev#readme",
+  "bugs": {
+    "url": "https://github.com/71zone/rundev/issues"
+  },
+  "keywords": [
+    "cli",
+    "dev",
+    "environment",
+    "runner",
+    "scripts"
+  ],
   "bin": {
     "rundev": "./dist/index.js"
   },
@@ -12,7 +28,8 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "release": "pnpm build && npm publish --access public"
   },
   "dependencies": {
     "@clack/prompts": "^0.9.1",
